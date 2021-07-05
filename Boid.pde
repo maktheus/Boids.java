@@ -1,18 +1,77 @@
+import java.util.Random;
 class Boid {
+  int days=0;
+  int dia_contaminado;
   PVector pos;
   PVector vel;
   PVector acc;
-  
-  public Boid(PVector pos, PVector vel) {
+
+  boolean contaminado;
+  boolean curado;
+  boolean vacinado;
+  boolean morto;
+  boolean mascara;
+
+  public Boid(PVector pos, PVector vel,boolean contaminado,boolean curado) {
     this.acc = new PVector();
     this.pos = pos;
     this.vel = vel;
+    this.contaminado= contaminado;
+    this.curado = curado;
+    this.vacinado = false;
+    this.morto = false;
+    this.dia_contaminado = days;
+    this.mascara = false;
   }
   
   void drawBoid(float x, float y, float heading) {
+ 
     pushMatrix();
     translate(x, y);
     rotate(heading);
+    
+    float shapeSize = 2;
+    boidShape = createShape();
+    boidShape.beginShape();
+
+    //Mudanca de cores
+    //saudavel
+    if(contaminado==false){
+      boidShape.fill(0,0,255);  
+      // circle(pos.x,pos.y, 3);
+    }
+    //saudavel com mascara
+
+    //contaminado
+    if(contaminado == true &&  curado==false) {
+      boidShape.fill(255,0,0);
+
+    }
+    //com mascara
+
+    //curado
+    if(contaminado== false && curado == true){
+      boidShape.fill(0,255,0);  
+    }
+    //com mascara
+    //vacinado
+    if(vacinado == true ){
+      boidShape.fill(218,165,32);
+    }
+    //com mascara
+    
+    //morto
+    if(morto == true){
+      boidShape.fill(128,128,128);
+    }
+
+    boidShape.vertex(shapeSize * 4, 0);
+    boidShape.vertex(-shapeSize, shapeSize * 2);
+    boidShape.vertex(0, 0);
+    boidShape.vertex(-shapeSize, -shapeSize * 2);
+  
+  
+  boidShape.endShape(CLOSE);
     shape(boidShape);
     popMatrix();
   }
@@ -38,7 +97,7 @@ class Boid {
     int total = 0;
     for (Boid other : boids) {
       float d = dist(pos.x, pos.y, other.pos.x, other.pos.y);
-      if (other != this && d < radius) {
+      if (other != this && d < radius  && other.morto==false) {
         PVector diff = PVector.sub(pos, other.pos);
         diff.div(d * d);
         target.add(diff);
@@ -60,7 +119,7 @@ class Boid {
     int total = 0;
     for (Boid other : boids) {
       float d = dist(pos.x, pos.y, other.pos.x, other.pos.y);
-      if (other != this && d < radius) {
+      if (other != this && d < radius  && other.morto==false) {
         center.add(other.pos);
         total++;
       }
@@ -80,7 +139,7 @@ class Boid {
     int total = 0;
     for (Boid other : boids) {
       float d = dist(pos.x, pos.y, other.pos.x, other.pos.y);
-      if (other != this && d < radius) {
+      if (other != this && d < radius && other.morto==false) {
         target.add(other.vel);
         total++;
       }
@@ -93,6 +152,62 @@ class Boid {
     force.mult(aCoef);
     acc.add(force);
   }
+
+  void contaminate(){
+      PVector target = new PVector();
+      int total = 0;
+      for (Boid other : boids) {
+      float d = dist(pos.x, pos.y, other.pos.x, other.pos.y);
+      if (other != this && d < radius) {
+          other.contaminado =true;
+          other.dia_contaminado = days;
+      }
+    }
+  }
+
+   void sobreviver(){
+      PVector target = new PVector();
+      int total = 0;
+      for (Boid other : boids) {
+      float d = dist(pos.x, pos.y, other.pos.x, other.pos.y);
+      if(other != this && d < radius && contaminado == true) {
+        curado =true;
+      }
+    }
+  }
+
+  void ficar_normal(){
+     PVector target = new PVector();
+      int total = 0;
+      for (Boid other : boids) {
+      float d = dist(pos.x, pos.y, other.pos.x, other.pos.y);
+      if(other != this && d < radius && curado == true) {
+        curado =false;
+        contaminado = false;
+      }
+    }
+  }
+  void vacinado(){
+    curado=false;
+    contaminado=false;
+    vacinado = true;
+  }
+  
+  void morte(){
+    curado=false;
+    contaminado=false;
+    morto=true;
+    vel.set(0.0, 0.0, 0.0);
+  }
+
+  void saida(){
+   boids.remove(3);
+   
+  }
+ void entrada(){
+   //TO DO
+ } 
+
   
   void wrap() {
     if (pos.x < 0) { pos.x = width; }
@@ -102,11 +217,44 @@ class Boid {
   }
   
   void update() {
+    this.days +=1;
+
+    Random gerador = new Random();
     acc = new PVector();
+
+    if(morto != true) {
     wrap();
     align();
     cohere();
     separate();
+    }
+
+    double r = gerador.nextInt(100);
+
+    if(contaminado==true && r>88  && r<90 ){
+    contaminate();
+    }
+
+    if(contaminado== true && r>78 && r<80 && days >500 ){
+      sobreviver();
+    }
+
+    if(contaminado== true && curado == true && r>76 && r<78 ){
+      ficar_normal();
+    }
+
+    if(r>20 && r<22 && days>600){
+      // vacinado();
+    }
+    if(r>80 && r<90){
+      // saida();
+      // print("saiu\n");
+    }
+
+    if(r>30 && r<32 && contaminado == true && days >500){
+      // morte();
+    }
+
     pos.add(vel);
     vel.add(acc);
     vel.limit(maxSpeed);

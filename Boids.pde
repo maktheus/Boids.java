@@ -7,16 +7,16 @@ float radius;
 float maxSpeed;
 float maxForce;
 
-Boid[] boids;
+Boid boid[];
+ArrayList<Boid> boids = new ArrayList();
 
 PShape boidShape;
-
+  import java.util.Random;
 void setup() {
-  // size(1280, 720);
-  fullScreen();
+  size(1920, 1080);
   frameRate(60);
   
-  n = 200;
+  n = 1000;
   aCoef = 0.3;
   sCoef = 0.5;
   cCoef = 0.5;
@@ -25,21 +25,18 @@ void setup() {
   maxSpeed = 3;
   maxForce = 0.1;
   
-  boids = new Boid[n];
+  boid = new Boid[n];
   
-  for (int i = 0; i < boids.length; i++) {
-    boids[i] = new Boid(new PVector(random(0, width), random(0, height)), PVector.random2D());
+  for (int i = 0; i < boid.length; i++) {
+    if(i==0){
+    boid[i] = new Boid(new PVector(random(0, width), random(0, height)), PVector.random2D(),true,false);
+    boids.add(boid[i]);
+    }
+    else{
+    boid[i] = new Boid(new PVector(random(0, width), random(0, height)), PVector.random2D(),false,false);
+    boids.add(boid[i]);
+    }
   }
-  
-  float shapeSize = 3;
-  boidShape = createShape();
-  boidShape.beginShape();
-  boidShape.strokeWeight(1.5);
-  boidShape.noFill();
-  boidShape.stroke(255);
-  boidShape.vertex(shapeSize * 4, 0);
-  boidShape.vertex(-shapeSize, shapeSize * 2);
-  boidShape.vertex(0, 0);
-  boidShape.vertex(-shapeSize, -shapeSize * 2);
-  boidShape.endShape(CLOSE);
+ 
+
 }
