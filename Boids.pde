@@ -1,3 +1,11 @@
+import java.util.ArrayList;
+ 
+import java.util.*;
+import java.io.*;
+import java.io.PrintWriter;
+import java.text.*;
+
+
 int n; // How many boids we have.
 float sCoef;
 float aCoef;
@@ -13,10 +21,10 @@ ArrayList<Boid> boids = new ArrayList();
 PShape boidShape;
   import java.util.Random;
 void setup() {
-  size(1920, 1080);
-  frameRate(60);
+  size(1920, 1080,FX2D);
+  frameRate(200);
   
-  n = 1000;
+  n = 2000;
   aCoef = 0.3;
   sCoef = 0.5;
   cCoef = 0.5;
