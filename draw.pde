@@ -66,7 +66,9 @@ void draw() {
         try{ 
             PrintWriter csvWriter = new PrintWriter(new FileWriter(csvFile)); 
             for (ArrayList < String > item : exit) {
+              
                 csvWriter.println(item);
+
             } 
             csvWriter.close();
         }
