@@ -12,7 +12,7 @@ ArrayList<String> saidaM = new ArrayList();
 void draw() {
     days++;
     background(0);
-    if (days % 100 != 0) {
+    if (days % 50 != 0) {
         for (Boid b : boids) {
           if(b.inside == true ){      
            b.update();
@@ -59,7 +59,8 @@ void draw() {
           exit.remove(2);
           exit.remove(2);
         }
-      
+        print(exit + "\n");
+        
         //export CSV file
         File csvFile = new File("C:\\code\\Boids\\testout.txt");
         try{ 
