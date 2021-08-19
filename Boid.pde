@@ -34,7 +34,7 @@ class Boid {
           translate(x, y);
           rotate(heading);
           
-          float shapeSize = 2;
+          float shapeSize = 1;
           boidShape = createShape();
           boidShape.beginShape();
           

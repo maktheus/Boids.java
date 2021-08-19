@@ -28,7 +28,7 @@ void setup() {
   aCoef = 0.3;
   sCoef = 0.5;
   cCoef = 0.5;
-  radius = 100;
+  radius = 50;
   
   maxSpeed = 3;
   maxForce = 0.1;

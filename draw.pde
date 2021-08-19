@@ -4,15 +4,18 @@ int curado = 0;
 int vacinado = 0;
 int morto = 0;
 int mascara = 0;
+int saudavel = 0;
 
 ArrayList<ArrayList<String>> exit = new ArrayList();
 ArrayList<String> saidaC = new ArrayList();
 ArrayList<String> saidaM = new ArrayList();
+ArrayList<String> saidaV = new ArrayList();
+ArrayList<String> saidaS = new ArrayList();
 
 void draw() {
     days++;
     background(0);
-    if (days % 100 != 0) {
+    if (days % 10 != 0 ) {
         for (Boid b : boids) {
           if(b.inside == true ){      
            b.update();
@@ -34,30 +37,46 @@ void draw() {
         }
     } 
     else {
+      print(days);
         infected = 0;
         curado = 0;
         morto=0;
         for (Boid b : boids) {
-           if(b.inside == true ){    
+           if(b.inside == true ){      
              b.update();
              b.display(); 
              if (b.contaminado == true) {
                 infected++;
               }
+              if (b.contaminado == false) {
+                saudavel++;
+              }
               if (b.morto == true) {
                 morto++;
               }  
+              if(b.vacinado == true){
+                vacinado ++;
+              }
           }
         } 
         
         
         saidaC.add(Integer.toString(infected));
         saidaM.add(Integer.toString(morto));
+        saidaV.add(Integer.toString(vacinado));
+        saidaS.add(Integer.toString(saudavel));
+
         exit.add(saidaC);
         exit.add(saidaM);
-        if(exit.size()>2){
-          exit.remove(2);
-          exit.remove(2);
+        exit.add(saidaV);
+        exit.add(saidaS);
+
+        if(exit.size()>4){
+          exit.remove(4);
+          exit.remove(4);
+          exit.remove(4);
+          exit.remove(4);
+          
         }
       
         //export CSV file
